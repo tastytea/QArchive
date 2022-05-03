@@ -133,6 +133,14 @@ int archiveReadOpenQIODevice(struct archive *archive, int blocksize, QIODevice *
     archive_read_set_close_callback(archive, archive_close_cb);
     archive_read_set_callback_data(archive, (void*)p);
     return archive_read_open1(archive);
+
+    /*
+    return archive_read_open2(archive,
+                              (void*)device,
+                              archive_open_cb,
+                              archive_read_cb,
+			      archive_seek_cb,
+                              archive_close_cb);*/
 }
 /* ---- */
 

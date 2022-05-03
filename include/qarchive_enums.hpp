@@ -74,7 +74,8 @@ enum : short {
     BZip2Format,
     GZipFormat,
     XzFormat,
-    XarFormat
+    XarFormat,
+    ZstdFormat
 };
 }
 #endif

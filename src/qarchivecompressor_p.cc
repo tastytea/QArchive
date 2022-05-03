@@ -513,6 +513,8 @@ bool CompressorPrivate::guessArchiveFormat() {
         m_ArchiveFormat = ZipFormat;
     } else if(ext == "7z") {
         m_ArchiveFormat = SevenZipFormat;
+    } else if(ext == "zstd") {
+        m_ArchiveFormat = ZstdFormat;
     } else {
         m_ArchiveFormat = 0;
         return false;
@@ -670,6 +672,10 @@ short CompressorPrivate::compress() {
             archive_write_add_filter_none(m_ArchiveWrite.data());
             archive_write_set_format_7zip(m_ArchiveWrite.data());
             break;
+	case ZstdFormat:
+	    archive_write_add_filter_zstd(m_ArchiveWrite.data());
+	    archive_write_set_format_gnutar(m_ArchiveWrite.data());
+	    break;
         case ZipFormat:
         default:
             archive_write_add_filter_none(m_ArchiveWrite.data());
