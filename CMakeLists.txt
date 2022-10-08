@@ -16,8 +16,15 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 option(QARCHIVE_STATIC "Static Build of QArchive" ON)
 
 # Find the QtCore library and libarchive.
-find_package(LibArchive)
-find_package(Qt5Core)
+# Fix for MacOSX
+if (APPLE)
+   set(PKG_CONFIG_EXECUTABLE pkg-config --define-prefix "${LIBARCHIVE_PKG_CONFIG}")
+   find_package(PkgConfig REQUIRED)
+   pkg_check_modules(LIBARCHIVE REQUIRED libarchive IMPORTED_TARGET)
+else ()
+   find_package(LibArchive)
+endif()
+find_package(Qt5 COMPONENTS Core)
 
 # cmake macros used
 include(GNUInstallDirs)
@@ -94,7 +101,12 @@ list(APPEND toinstall
     ${PROJECT_BINARY_DIR}/config.h
 )	
 
-target_link_libraries(QArchive PUBLIC Qt5::Core LibArchive::LibArchive)
+if (APPLE)
+   target_link_libraries(QArchive PUBLIC Qt5::Core PkgConfig::LIBARCHIVE)
+else()
+   target_link_libraries(QArchive PUBLIC Qt5::Core LibArchive::LibArchive)
+endif()
+
 target_include_directories(QArchive INTERFACE
 				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
